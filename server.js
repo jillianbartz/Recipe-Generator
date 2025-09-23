@@ -35,16 +35,31 @@ async function generateContent(
 ) {
   try {
     const ai = new GoogleGenAI({
-      vertexai: true,
       project: projectId,
       location: location,
+      httpOptions: {
+        apiVersion: "v1beta1",
+      },
     });
 
     const content = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Extract only the preparation time (in minutes), cook time (in minutes), serving amount, ingredients and directions from this recipe page.
-Format it as JSON with keys "prepTime", "cookTime", "servings", "ingredients" and "directions".
-<url>${url}</url>`,
+      contents: `Extract the recipe data from the provided URL and return it as a single JSON object.
+Do not include any extra text or explanations.
+If a field is not found, its value should be null.
+
+URL: <url>${url}</url>
+
+JSON Format:
+{
+  "name": "string",
+  "prepTime": "integer",
+  "cookTime": "integer",
+  "servings": "integer",
+  "ingredients": ["string"],
+  "directions": ["string"]
+}`,
+      config: { tools: [{ urlContext: {} }] },
     });
 
     var recipe;

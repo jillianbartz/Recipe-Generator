@@ -52,9 +52,9 @@ export const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [readyForDisplay, setReadyForDisplay] = useState(false);
   const [landingPageVisible, setLandingPageVisible] = useState(true);
-  useEffect(() => {
-    setRecipe(tempData);
-  }, []);
+  // useEffect(() => {
+  //   setRecipe(tempData);
+  // }, []);
 
   //debounce set url
   function handleChange(inputURL: string) {
@@ -71,46 +71,46 @@ export const App = () => {
     setIsLoading(false);
   };
 
-  //   const sendURL = async (e: React.FormEvent<HTMLFormElement>) => {
-  //     e.preventDefault();
-  //     console.log("Submitting URL:", url);
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await fetch("http://localhost:3000/", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ url }),
-  //       });
-
-  //       if (!response.ok) {
-  //         console.error("Backend returned error:", response.status);
-  //         return;
-  //       }
-
-  //       const recipeText = await response.json();
-
-  //       if (recipeText.reply.ingredients && recipeText.reply.directions) {
-  //         setRecipe(recipeText.reply);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to fetch recipe:", error);
-  //     }
-  //     setIsLoading(false);
-  //     setReadyForDisplay(true);
-  //   };
-
-  const sendURL = async (e: React.FormEvent) => {
+  const sendURL = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-console.log("HERE")
-      setIsLoading(true);
+    console.log("Submitting URL:", url);
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:3000/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
 
-    const handler = setTimeout(() => {
+      if (!response.ok) {
+        console.error("Backend returned error:", response.status);
+        return;
+      }
+
+      const recipeText = await response.json();
+
+      if (recipeText.reply.ingredients && recipeText.reply.directions) {
+        setRecipe(recipeText.reply);
+      }
+    } catch (error) {
+      console.error("Failed to fetch recipe:", error);
+    }
     setIsLoading(false);
-      setReadyForDisplay(true);
-    }, 2000);
-    console.log("got here")
-    return () => clearTimeout(handler);
+    setReadyForDisplay(true);
   };
+
+  //   const sendURL = async (e: React.FormEvent) => {
+  //     e.preventDefault();
+  // console.log("HERE")
+  //       setIsLoading(true);
+
+  //     const handler = setTimeout(() => {
+  //     setIsLoading(false);
+  //       setReadyForDisplay(true);
+  //     }, 2000);
+  //     console.log("got here")
+  //     return () => clearTimeout(handler);
+  //   };
 
   if (readyForDisplay) {
     return <RecipePage recipe={recipe} onBack={handleBack} />;
