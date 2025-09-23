@@ -1,5 +1,6 @@
 import { ChefHat, Clock, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../components/button";
+import { Card } from "../components/card"
 import type { RecipeProps } from "../components/interfaces";
 
 const RecipePage = ({
@@ -8,7 +9,7 @@ const RecipePage = ({
 }: RecipeProps & { onBack: () => void }) => {
   return (
     <>
-      recipe &&
+      {recipe && (
       <div className="min-h-screen bg-gradient-to-br from-secondary via-background to-muted">
         {/* Header */}
         <div className="bg-gradient-accent p-6 md:p-8">
@@ -53,7 +54,7 @@ const RecipePage = ({
         <div className="max-w-6xl mx-auto p-6 md:p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Ingredients - Left Side */}
-            <Card className="p-6 shadow-soft animate-slide-up bg-white/80 backdrop-blur-sm border-warmPeach/20">
+            <Card className="p-6 shadow-soft animate-slide-up bg-white/80 backdrop-blur-sm border-warmPeach/20 !h-auto">
               <div className="mb-6">
                 <h2 className="font-sofia text-2xl md:text-3xl text-primary mb-2 flex items-center gap-3">
                   <ShoppingCart className="w-7 h-7 text-primary" />
@@ -120,6 +121,7 @@ const RecipePage = ({
           </div>
         </div>
       </div>
+    )}
     </>
   );
 };

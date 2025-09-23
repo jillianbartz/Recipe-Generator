@@ -99,12 +99,16 @@ export const App = () => {
   //     setReadyForDisplay(true);
   //   };
 
-  const sendURL = () => {
-    const handler = setTimeout(() => {
-      console.log("set url");
+  const sendURL = async (e: React.FormEvent) => {
+    e.preventDefault();
+console.log("HERE")
       setIsLoading(true);
-    }, 200);
+
+    const handler = setTimeout(() => {
     setIsLoading(false);
+      setReadyForDisplay(true);
+    }, 2000);
+    console.log("got here")
     return () => clearTimeout(handler);
   };
 

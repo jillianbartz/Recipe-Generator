@@ -2,7 +2,8 @@ import { ChefHat, Utensils, ClipboardList } from "lucide-react";
 
 const LoadingPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-secondary flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4"
+    style={{backgroundColor: "rgba(232, 157, 88, 0.9)"}}>
       <div className="text-center animate-slide-up">
         <div className="mb-8">
           {/* Animated cooking icons */}
