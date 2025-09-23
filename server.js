@@ -42,8 +42,8 @@ async function generateContent(
 
     const content = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Extract only the ingredients and directions from this recipe page.
-Format it as JSON with keys "ingredients" and "directions".
+      contents: `Extract only the preparation time (in minutes), cook time (in minutes), serving amount, ingredients and directions from this recipe page.
+Format it as JSON with keys "prepTime", "cookTime", "servings", "ingredients" and "directions".
 <url>${url}</url>`,
     });
 
