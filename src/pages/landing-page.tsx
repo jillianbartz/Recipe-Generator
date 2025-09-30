@@ -1,9 +1,29 @@
+import { useState } from "react";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
+import type { Recipe } from "../components/interfaces";
+import backdropImage from "../components/img/landing-backdrop.jpg"
 
-const LandingPage = () => {
+
+const LandingPage = ({ sendUrl }) => {
+  const [url, setUrl] = useState("");
+  
+
+  //debounce set url
+  function handleChange(inputURL: string) {
+    const handler = setTimeout(() => {
+      console.log("set url");
+      setUrl(inputURL);
+    }, 200);
+    return () => clearTimeout(handler);
+  }
+
+
+  
+
+
   return (
-    <div
+<div
       className="min-h-screen flex items-center justify-center p-4 relative"
       style={{
         backgroundImage: `linear-gradient(135deg, rgba(232, 157, 88, 0.9), rgba(232, 131, 88, 0.9)), url(${backdropImage})`,
@@ -22,7 +42,7 @@ const LandingPage = () => {
           </p>
         </div>
 
-        <form onSubmit={sendURL} className="space-y-6">
+        <form onSubmit={sendUrl} className="space-y-6">
           <div className="relative">
             <Input
               type="url"

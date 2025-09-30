@@ -1,26 +1,18 @@
 import { useEffect, useState } from "react";
 import { Button } from "./components/button";
-import backdropImage from "./components/img/landing-backdrop.jpg";
 import { Input } from "./components/input";
 import type { Recipe } from "./components/interfaces";
 import LoadingPage from "./pages/loading-page";
 import RecipePage from "./pages/recipe-page";
+import LandingPage from "./pages/landing-page"
 
 export const App = () => {
-  const [url, setUrl] = useState("");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+
   const [currentView, setCurrentView] = useState<
     "landing" | "loading" | "recipe"
   >("landing");
 
-  //debounce set url
-  function handleChange(inputURL: string) {
-    const handler = setTimeout(() => {
-      console.log("set url");
-      setUrl(inputURL);
-    }, 200);
-    return () => clearTimeout(handler);
-  }
 
   const handleBack = () => {
     setCurrentView("landing");
@@ -84,8 +76,12 @@ export const App = () => {
     return <RecipePage recipe={recipe} onBack={handleBack} />;
   }
 
-  if (currentView === "loading") {
+  else if (currentView === "loading") {
     return <LoadingPage />;
+  }
+
+  else {
+    return <LandingPage sendUrl={sendURL}/>;
   }
 
   // Landing page
