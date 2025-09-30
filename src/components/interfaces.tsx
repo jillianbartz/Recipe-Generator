@@ -5,7 +5,7 @@ export interface RecipeProps {
 }
 
 export interface Recipe {
-  name: string[];
+  name: string;
   ingredients: string[];
   directions: string[];
   prepTime: string[];
