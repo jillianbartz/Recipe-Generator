@@ -71,6 +71,7 @@ const RecipePage = ({
       alert("Failed to download PDF. Check console for details.");
     }
   };
+
   return (
     <>
       {recipe && (

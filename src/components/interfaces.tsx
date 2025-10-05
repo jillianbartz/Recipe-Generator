@@ -30,3 +30,7 @@ export interface CardProps {
   children?: ReactNode;
   style?: React.CSSProperties;
 }
+
+export interface LandingPageProps {
+  sendURL: (url: string) => void;
+}

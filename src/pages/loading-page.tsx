@@ -38,9 +38,6 @@ const LoadingPage = () => {
           <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <div className="h-full bg-white/80 rounded-full loading-bar"></div>
           </div>
-          <p className="font-nunito text-sm text-white/70 mt-4">
-            This usually takes 5-10 seconds...
-          </p>
         </div>
       </div>
 

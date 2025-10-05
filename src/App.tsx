@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import { Button } from "./components/button";
-import { Input } from "./components/input";
+import { useState } from "react";
 import type { Recipe } from "./components/interfaces";
 import LoadingPage from "./pages/loading-page";
 import RecipePage from "./pages/recipe-page";
-import LandingPage from "./pages/landing-page"
+import LandingPage from "./pages/landing-page";
 
 export const App = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -13,16 +11,12 @@ export const App = () => {
     "landing" | "loading" | "recipe"
   >("landing");
 
-
   const handleBack = () => {
     setCurrentView("landing");
     setRecipe(null);
-    window.history.pushState({}, "", "/");
   };
 
-  const sendURL = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Submitting URL:", url);
+  const sendURL = async (url: string) => {
     setCurrentView("loading");
 
     try {
@@ -33,25 +27,16 @@ export const App = () => {
       });
 
       if (!response.ok) {
-        console.error("Backend returned error:", response.status);
-        setCurrentView("landing");
-        return;
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const recipeText = await response.json();
-      console.log("Received recipe data:", recipeText);
+      const { reply } = await response.json();
 
-      if (
-        recipeText.reply &&
-        recipeText.reply.ingredients &&
-        recipeText.reply.directions
-      ) {
-        console.log("Setting recipe:", recipeText.reply);
-        setRecipe(recipeText.reply);
+      if (reply?.ingredients && reply?.directions) {
+        setRecipe(reply);
         setCurrentView("recipe");
       } else {
-        console.error("Invalid recipe format:", recipeText);
-        setCurrentView("landing");
+        throw new Error("Invalid recipe format received");
       }
     } catch (error) {
       console.error("Failed to fetch recipe:", error);
@@ -59,77 +44,13 @@ export const App = () => {
     }
   };
 
-  // Update URL when recipe is loaded
-  useEffect(() => {
-    if (currentView === "recipe" && recipe?.name) {
-      const recipeSlug = recipe.name.toLowerCase().replace(/\s+/g, "-");
-      window.history.pushState(
-        { recipeName: recipe.name },
-        "",
-        `/recipe/${recipeSlug}`
-      );
-    }
-  }, [currentView, recipe]);
-
-  // Render based on current view
   if (currentView === "recipe" && recipe) {
     return <RecipePage recipe={recipe} onBack={handleBack} />;
   }
 
-  else if (currentView === "loading") {
+  if (currentView === "loading") {
     return <LoadingPage />;
   }
 
-  else {
-    return <LandingPage sendUrl={sendURL}/>;
-  }
-
-  // Landing page
-  return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4 relative"
-      style={{
-        backgroundImage: `linear-gradient(135deg, rgba(232, 157, 88, 0.9), rgba(232, 131, 88, 0.9)), url(${backdropImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      <div className="max-w-2xl w-full text-center animate-fade-in">
-        <div className="mb-12">
-          <h1 className="font-sofia text-6xl md:text-7xl text-white mb-4 drop-shadow-lg">
-            Sweet Recipes
-          </h1>
-          <p className="font-nunito text-xl md:text-2xl text-white/90 font-light">
-            Transform any recipe URL into a beautiful, organized format
-          </p>
-        </div>
-
-        <form onSubmit={sendURL} className="space-y-6">
-          <div className="relative">
-            <Input
-              type="url"
-              placeholder="Paste your recipe URL here..."
-              className="w-full h-16 text-lg font-nunito px-6 rounded-2xl border-0 bg-white/95 backdrop-blur-sm shadow-soft focus:shadow-glow focus:bg-white transition-all duration-300 placeholder:text-muted-foreground/70"
-              onChange={(e) => handleChange(e.target.value)}
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full md:w-auto px-12 py-4 text-lg font-nunito font-semibold bg-accent hover:bg-accent/90 text-white rounded-2xl shadow-soft hover:shadow-glow transition-all duration-300 hover:scale-105 flex items-center gap-2"
-          >
-            Parse My Recipe
-          </Button>
-        </form>
-
-        <div className="mt-16 text-white/70 font-nunito">
-          <p className="text-sm">
-            Supports most popular recipe websites including AllRecipes, Food
-            Network, Tasty, and more!
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  return <LandingPage sendURL={sendURL} />;
 };

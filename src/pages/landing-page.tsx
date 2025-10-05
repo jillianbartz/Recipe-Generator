@@ -1,29 +1,21 @@
 import { useState } from "react";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
-import type { Recipe } from "../components/interfaces";
-import backdropImage from "../components/img/landing-backdrop.jpg"
+import type { LandingPageProps } from "../components/interfaces";
+import backdropImage from "../components/img/landing-backdrop.jpg";
 
-
-const LandingPage = ({ sendUrl }) => {
+const LandingPage = ({ sendURL }: LandingPageProps) => {
   const [url, setUrl] = useState("");
-  
 
-  //debounce set url
-  function handleChange(inputURL: string) {
-    const handler = setTimeout(() => {
-      console.log("set url");
-      setUrl(inputURL);
-    }, 200);
-    return () => clearTimeout(handler);
-  }
-
-
-  
-
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (url) {
+      sendURL(url);
+    }
+  };
 
   return (
-<div
+    <div
       className="min-h-screen flex items-center justify-center p-4 relative"
       style={{
         backgroundImage: `linear-gradient(135deg, rgba(232, 157, 88, 0.9), rgba(232, 131, 88, 0.9)), url(${backdropImage})`,
@@ -42,13 +34,14 @@ const LandingPage = ({ sendUrl }) => {
           </p>
         </div>
 
-        <form onSubmit={sendUrl} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <Input
               type="url"
               placeholder="Paste your recipe URL here..."
               className="w-full h-16 text-lg font-nunito px-6 rounded-2xl border-0 bg-white/95 backdrop-blur-sm shadow-soft focus:shadow-glow focus:bg-white transition-all duration-300 placeholder:text-muted-foreground/70"
-              onChange={(e) => handleChange(e.target.value)}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
             />
           </div>
 
