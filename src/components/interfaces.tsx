@@ -8,9 +8,9 @@ export interface Recipe {
   name: string;
   ingredients: string[];
   directions: string[];
-  prepTime: string[];
-  cookTime: string[];
-  servings: string[];
+  prepTime?: string;
+  cookTime?: string;
+  servings?: string;
 }
 
 export interface InputProps

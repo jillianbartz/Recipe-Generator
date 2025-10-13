@@ -2,6 +2,7 @@ import { ChefHat, Clock, Download, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../components/button";
 import { Card } from "../components/card";
 import type { RecipeProps } from "../components/interfaces";
+import { API_ENDPOINTS } from "../constants/api";
 
 const RecipePage = ({
   recipe,
@@ -14,7 +15,7 @@ const RecipePage = ({
 
     try {
       // Send recipe data to backend
-      const response = await fetch(`http://localhost:3000/api/pdf/export-pdf`, {
+      const response = await fetch(API_ENDPOINTS.PDF, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

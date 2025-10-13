@@ -1,14 +1,21 @@
 import { Router } from "express";
 import puppeteer from "puppeteer";
 import { getPdfStyles } from "./pdf-styles.js";
+import { validateRecipe, sanitizeFilename } from "../utils/validation.ts";
+
+// PDF Configuration
+const PDF_CONFIG = {
+  FORMAT: "A4",
+  VIEWPORT: { width: 1200, height: 800 },
+};
 
 const router = Router();
 
 router.post("/export-pdf", async (req, res) => {
   const { recipe } = req.body;
 
-  if (!recipe || !recipe.name || !recipe.ingredients || !recipe.directions) {
-    return res.status(400).send("Invalid recipe data");
+  if (!validateRecipe(recipe)) {
+    return res.status(400).json({ error: "Invalid recipe data" });
   }
 
   let browser;
@@ -19,7 +26,7 @@ router.post("/export-pdf", async (req, res) => {
     });
 
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 800 });
+    await page.setViewport(PDF_CONFIG.VIEWPORT);
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -92,7 +99,7 @@ router.post("/export-pdf", async (req, res) => {
     });
 
     const pdfBuffer = await page.pdf({
-      format: "A4",
+      format: PDF_CONFIG.FORMAT,
       printBackground: true,
       margin: { top: "0px", bottom: "0px", left: "0px", right: "0px" },
       preferCSSPageSize: false,
@@ -105,9 +112,7 @@ router.post("/export-pdf", async (req, res) => {
     res.setHeader("Content-Length", pdfBuffer.length);
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="recipe-${recipe.name
-        .toLowerCase()
-        .replace(/\s+/g, "-")}.pdf"`
+      `attachment; filename="recipe-${sanitizeFilename(recipe.name)}.pdf"`
     );
     res.end(pdfBuffer, "binary");
   } catch (err) {

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { Recipe } from "./components/interfaces";
+import { API_ENDPOINTS } from "./constants/api";
+import { validateUrl, validateRecipe } from "./utils/validation";
 import LoadingPage from "./pages/loading-page";
 import RecipePage from "./pages/recipe-page";
 import LandingPage from "./pages/landing-page";
@@ -17,10 +19,15 @@ export const App = () => {
   };
 
   const sendURL = async (url: string) => {
+    if (!validateUrl(url)) {
+      console.error("Invalid URL provided");
+      return;
+    }
+
     setCurrentView("loading");
 
     try {
-      const response = await fetch("http://localhost:3000/api/gemini", {
+      const response = await fetch(API_ENDPOINTS.GEMINI, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
@@ -32,7 +39,7 @@ export const App = () => {
 
       const { reply } = await response.json();
 
-      if (reply?.ingredients && reply?.directions) {
+      if (validateRecipe(reply)) {
         setRecipe(reply);
         setCurrentView("recipe");
       } else {
